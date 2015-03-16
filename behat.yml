@@ -1,0 +1,11 @@
+default:
+    gherkin:
+        filters:
+            tags: "~@wip&&~@disabled"
+    suites:
+        default:
+            contexts:
+                - FeatureContext: ~
+    extensions:
+        RMiller\BehatSpec\BehatExtension: ~
+        Behat\Symfony2Extension: ~
