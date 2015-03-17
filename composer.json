@@ -28,7 +28,8 @@
         "rmiller/behat-spec": "~0.2",
         "everzet/persisted-objects": "~1.0",
         "behat/symfony2-extension": "~2.0",
-        "fabpot/php-cs-fixer": "~1.5"
+        "fabpot/php-cs-fixer": "~1.5",
+        "bossa/phpspec2-expect": "dev-master"
 	},
 	"scripts" : {
 		"post-install-cmd" : [
