@@ -4,17 +4,30 @@ namespace Domain\Meetup;
 
 use Domain\Attendee\AttendeesList;
 use Domain\Attendee\Attendee;
+use Domain\Meetup\Observer\AttendeeHasAlreadySignedUp;
 
 class Meetup
 {
+    /**
+     * @var string
+     */
+    private $name;
+
     /**
      * @var AttendeesList
      */
     private $attendees;
 
-    public function __construct()
+    /**
+     * @var AttendeeHasAlreadySignedUp
+     */
+    private $observer;
+
+    public function __construct($name, AttendeeHasAlreadySignedUp $observer)
     {
+        $this->name = $name;
         $this->attendees = new AttendeesList();
+        $this->observer = $observer;
     }
 
     /**
@@ -30,6 +43,10 @@ class Meetup
      */
     public function signUp(Attendee $attendee)
     {
-        $this->attendees->add($attendee);
+        if (!$this->attendees->has($attendee)) {
+            $this->attendees->add($attendee);
+        } else {
+            $this->observer->attendeeHasAlreadySignedUp($attendee, $this);
+        }
     }
 }

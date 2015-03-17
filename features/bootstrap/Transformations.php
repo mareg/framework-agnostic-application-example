@@ -19,7 +19,7 @@ trait Transformations
     public function transformMeetupNameToMeetup($meetup)
     {
         if (!array_key_exists($meetup, $this->meetups)) {
-            $this->meetups[$meetup] = new Meetup($meetup);;
+            $this->meetups[$meetup] = new Meetup($meetup, $this);;
         }
 
         return $this->meetups[$meetup];

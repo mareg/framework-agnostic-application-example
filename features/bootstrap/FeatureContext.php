@@ -8,11 +8,12 @@ use Behat\Gherkin\Node\TableNode;
 use Domain\Attendee\AttendeesList;
 use Domain\Meetup\Meetup;
 use Domain\Attendee\Attendee;
+use Domain\Meetup\Observer\AttendeeHasAlreadySignedUp;
 
 /**
  * Defines application features from the specific context.
  */
-class FeatureContext implements Context, SnippetAcceptingContext
+class FeatureContext implements Context, AttendeeHasAlreadySignedUp, SnippetAcceptingContext
 {
     use Transformations;
 
@@ -20,6 +21,11 @@ class FeatureContext implements Context, SnippetAcceptingContext
      * @var Attendee
      */
     private $me;
+
+    /**
+     * @var Attendee
+     */
+    private $attendeeAlreadySignedUp = null;
 
     /**
      * Initializes context.
@@ -31,6 +37,14 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function __construct()
     {
         $this->me = Attendee::fromEmail('email@example.com');
+    }
+
+    /**
+     * @BeforeScenario
+     */
+    public function preScenario()
+    {
+        $this->meetups = [];
     }
 
     /**
@@ -55,5 +69,29 @@ class FeatureContext implements Context, SnippetAcceptingContext
     public function iShouldBeOnTheAttendeesListOfTheMeetup(Meetup $meetup)
     {
         expect($meetup->attendees()->has($this->me))->toBe(true);
+    }
+
+    /**
+     * @Given I have already signed up for the meetup :meetup
+     */
+    public function iHaveAlreadySignedUpForTheMeetup(Meetup $meetup)
+    {
+        $meetup->signUp($this->me);
+    }
+
+    /**
+     * @Then I should be notified that I am already on the list of :meetup meetup attendees
+     */
+    public function iShouldBeNotifiedThatIAmAlreadyOnTheListOfMeetupAttendees(Meetup $meetup)
+    {
+        expect($this->attendeeAlreadySignedUp)->toBe($this->me);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attendeeHasAlreadySignedUp(Attendee $attendee, Meetup $meetup)
+    {
+        $this->attendeeAlreadySignedUp = $attendee;
     }
 }
